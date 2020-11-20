@@ -25,12 +25,13 @@ admin.initializeApp();
 const client = new vision.ImageAnnotatorClient();
 
 exports.labelImage = functions.storage.object().onFinalize(async (object) => {
-    const bucket = admin.storage().bucket(object.bucket);
+    // TODO: allow configuration.
     if (!object.name?.toLowerCase().endsWith(".jpg") 
         && !object.name?.toLowerCase().endsWith(".jpeg")
         && !object.name?.toLowerCase().endsWith(".png")) {
         return;
     }
+    const bucket = admin.storage().bucket(object.bucket);
     const imageContents = await bucket.file(object.name).download();
     const imageBase64 = Buffer.from(imageContents[0]).toString("base64");
     const request = {

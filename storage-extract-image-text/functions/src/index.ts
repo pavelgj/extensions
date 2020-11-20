@@ -25,6 +25,12 @@ admin.initializeApp();
 const client = new vision.ImageAnnotatorClient();
 
 exports.extractText = functions.storage.object().onFinalize(async (object) => {
+    // TODO: allow configuration.
+    if (!object.name?.toLowerCase().endsWith(".jpg") 
+        && !object.name?.toLowerCase().endsWith(".jpeg")
+        && !object.name?.toLowerCase().endsWith(".png")) {
+        return;
+    }
     const bucket = admin.storage().bucket(object.bucket);
     const imageContents = await bucket.file(object.name).download();
     const imageBase64 = Buffer.from(imageContents[0]).toString("base64");
